@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divyansh Rai - Interactive Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Visualization & Content Choices:
+        - Objective: Animated text block in Hero/About. Goal: Inform. Interaction: Typing animation.
+        - Quick Stats: Number-based cards. Goal: Provide at-a-glance summary. Interaction: Static, prominent display.
+        - Download CV: Button. Goal: Provide traditional resume. Interaction: Click.
+        - Education: Cards. Goal: Inform. Interaction: Scroll-reveal.
+        - Experience: Card. Goal: Showcase. Interaction: Scroll-reveal.
+        - Skills: Animated proficiency bars. Goal: Highlight and quantify. Interaction: Visual progression, scroll-reveal.
+        - Projects: Interactive cards with placeholder content. Goal: Showcase work. Interaction: Scroll-reveal.
+        - Certifications: Cards with placeholder content. Goal: Show learning. Interaction: Scroll-reveal.
+        - Activities: List items. Goal: Show well-roundedness. Interaction: Scroll-reveal.
+        - Contact: Clickable links in footer. Goal: Connect. Interaction: Click.
+        - Floating Avatar: Decorative animated element. Goal: Personal touch, visual interest. Interaction: Subtle animation.
+        No complex charts (Chart.js/Plotly.js) as the data for a CV (even enhanced) is still largely textual and qualitative, best served by clear UI/UX and subtle animations rather than complex data visualizations. Focus remains on layout, typography, and engaging micro-interactions.
+    -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth; /* Ensure smooth scrolling for nav links */
+            background-size: 400% 400%; /* For subtle background gradient animation */
+            animation: gradientBackground 15s ease infinite;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        @keyframes gradientBackground {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+        }
+
+        /* Custom Styles for Scroll Reveal Animation */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px); /* Increased translate for more noticeable effect */
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out; /* Smoother transition */
+        }
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Skill Bar Animation */
+        .skill-bar-inner {
+            width: 0;
+            transition: width 1.8s ease-out; /* Slower, smoother animation */
+        }
+        .is-visible .skill-bar-inner {
+            width: var(--skill-width, 0%);
+        }
+
+        /* Typing Effect for Objective */
+        .typewriter-text {
+            overflow: hidden;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: .05em;
+            animation: 
+                typing 3.5s steps(40, end),
+                blink-caret .75s step-end infinite;
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: rgb(var(--tw-color-blue-600)) }
+        }
+        /* Override for smaller screens to prevent overflow */
+        @media (max-width: 768px) {
+            .typewriter-text {
+                white-space: normal;
+                border-right: none;
+                animation: none;
+            }
+        }
+
+        /* Floating Avatar Animation */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .floating-avatar {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Section Title Underline Animation */
+        .section-title::after {
+            transition: width 0.3s ease-out;
+        }
+        .section-title:hover::after {
+            width: 50%; /* Expand underline on hover */
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-indigo-50 text-slate-700">
+
+    <header id="main-header" class="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-50 transition-all duration-300 ease-in-out">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#" class="text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors">Divyansh Rai</a>
+                </div>
+                <nav class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#about" class="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-colors">About</a>
+                        <a href="#education" class="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-colors">Education</a>
+                        <a href="#experience" class="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-colors">Experience</a>
+                        <a href="#skills" class="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-colors">Skills</a>
+                        <a href="#projects" class="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-colors">Projects</a>
+                        <a href="#certifications" class="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-colors">Certifications</a>
+                        <a href="#activities" class="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-colors">Activities</a>
+                        <a href="#contact" class="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-colors">Contact</a>
+                    </div>
+                </nav>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-slate-500 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-colors">About</a>
+                <a href="#education" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-colors">Education</a>
+                <a href="#experience" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-colors">Experience</a>
+                <a href="#skills" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-colors">Skills</a>
+                <a href="#projects" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-colors">Projects</a>
+                <a href="#certifications" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-colors">Certifications</a>
+                <a href="#activities" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-colors">Activities</a>
+                <a href="#contact" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-colors">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <section id="about" class="min-h-[calc(80vh-4rem)] flex flex-col justify-center items-center py-12 md:py-16 animate-on-scroll">
+            <div class="w-full text-center">
+                <p class="text-blue-600 font-semibold tracking-wide uppercase mb-3 text-lg">Aspiring HR & Marketing Professional</p>
+                <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
+                    Hello, I'm Divyansh Rai.
+                </h1>
+                <div class="max-w-3xl mx-auto card bg-gradient-to-r from-blue-50 to-indigo-50 p-8 shadow-xl shadow-blue-200/50 mb-10">
+                    <h2 class="text-2xl font-semibold text-slate-800 mb-4 text-center">Objective</h2>
+                    <p class="text-slate-700 leading-relaxed text-lg typewriter-text">
+                        A highly motivated and adaptable student at RNS Institute of Technology, with practical experience in web development and strong interpersonal skills. Eager to leverage a foundational technical background and proven abilities in communication and teamwork to contribute effectively to an HR & Marketing Internship at EdLernity. Passionate about learning and applying innovative solutions in a dynamic work-from-home environment.
+                    </p>
+                </div>
+                
+                <div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12 animate-on-scroll is-visible">
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center justify-center">
+                        <p class="text-4xl font-bold text-blue-700">8.35</p>
+                        <p class="text-sm text-slate-600">Current CGPA</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center justify-center">
+                        <p class="text-4xl font-bold text-blue-700">2+</p>
+                        <p class="text-sm text-slate-600">Projects Completed</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center justify-center">
+                        <p class="text-4xl font-bold text-blue-700">6+</p>
+                        <p class="text-sm text-slate-600">Months Experience</p>
+                    </div>
+                </div>
+
+                <div class="mb-10 animate-on-scroll is-visible">
+                    <a href="mailto:divyanshrai23is@rnsit.ac.in?subject=Request for Divyansh Rai's Resume" class="inline-block bg-blue-600 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all duration-300">
+                        📧 Request Full CV (PDF)
+                    </a>
+                    <p class="text-sm text-slate-600 mt-3">Click to send an email requesting my detailed CV in PDF format.</p>
+                </div>
+
+                <p class="text-slate-600 max-w-2xl mx-auto">This section introduces my career aspirations and provides a quick overview of my key academic and professional achievements, setting the stage for a deeper exploration of my profile.</p>
+            </div>
+        </section>
+
+        <section id="education" class="py-16 md:py-24 bg-gradient-to-br from-slate-50 to-gray-100 rounded-xl my-12 md:my-16 animate-on-scroll">
+            <div class="max-w-5xl mx-auto px-4">
+                <h2 class="text-4xl font-bold text-slate-800 mb-12 text-center relative section-title after:absolute after:bottom-[-10px] after:left-1/2 after:-translate-x-1/2 after:w-20 after:h-1 after:bg-blue-600 after:rounded-full">My Educational Journey</h2>
+                <p class="text-center text-slate-600 mb-12 max-w-2xl mx-auto">Here's a look at my academic background, forming the foundation of my knowledge and skills. Each step has been crucial in shaping my learning approach and analytical abilities, from school to university.</p>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 ease-in-out">
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">RNS Institute of Technology (RNSIT)</h3>
+                        <p class="text-sm text-slate-500 mb-1">Bengaluru, India</p>
+                        <p class="text-slate-700 font-medium mb-1">B.E. in Information Science Engineering</p>
+                        <p class="text-slate-600 text-sm">Started: 2023</p>
+                        <p class="text-slate-600 text-sm">Current CGPA: 8.35</p>
+                    </div>
+                    <div class="card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 ease-in-out">
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">Sri Chaitanya Techno School</h3>
+                        <p class="text-sm text-slate-500 mb-1">Dehradun</p>
+                        <p class="text-slate-700 font-medium mb-1">12th Standard</p>
+                        <p class="text-slate-600 text-sm">Passed: 2023</p>
+                    </div>
+                    <div class="card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 ease-in-out">
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">St Mary's Sec Convent School</h3>
+                        <p class="text-sm text-slate-500 mb-1">Dehradun</p>
+                        <p class="text-slate-700 font-medium mb-1">10th Standard</p>
+                        <p class="text-slate-600 text-sm">Passed: 2021</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience" class="py-16 md:py-24 animate-on-scroll">
+            <div class="max-w-4xl mx-auto px-4">
+                <h2 class="text-4xl font-bold text-slate-800 mb-12 text-center relative section-title after:absolute after:bottom-[-10px] after:left-1/2 after:-translate-x-1/2 after:w-20 after:h-1 after:bg-blue-600 after:rounded-full">Professional Experience</h2>
+                <p class="text-center text-slate-600 mb-12 max-w-2xl mx-auto">This section details my practical work experience, showcasing how I've applied my skills in a professional setting and contributed to projects.</p>
+                <div class="card bg-gradient-to-r from-green-50 to-teal-50 p-8 shadow-xl shadow-green-200/50 hover:shadow-2xl hover:scale-[1.01] transition-all duration-300 ease-in-out animate-on-scroll">
+                    <h3 class="text-2xl font-semibold text-green-700 mb-3">Web Developer (Python)</h3>
+                    <p class="text-md font-medium text-slate-700 mb-1">Maalde | [City, State, if applicable]</p>
+                    <p class="text-sm text-slate-500 mb-4">December 2023 – May 2024</p>
+                    <ul class="list-disc list-inside space-y-2 text-slate-700 text-lg">
+                        <li>Developed and maintained **frontend components** for a **startup funding website** using Python.</li>
+                        <li>Gained practical experience in web application development, focusing on user interface design and functionality.</li>
+                        <li>Contributed to a professional team environment, enhancing collaboration and communication skills.</li>
+                        <li>Applied problem-solving abilities to implement features and ensure smooth user experience on the platform.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="py-16 md:py-24 bg-gradient-to-br from-slate-50 to-gray-100 rounded-xl my-12 md:my-16 animate-on-scroll">
+            <div class="max-w-5xl mx-auto px-4">
+                <h2 class="text-4xl font-bold text-slate-800 mb-12 text-center relative section-title after:absolute after:bottom-[-10px] after:left-1/2 after:-translate-x-1/2 after:w-20 after:h-1 after:bg-blue-600 after:rounded-full">My Skillset</h2>
+                <p class="text-center text-slate-600 mb-12 max-w-2xl mx-auto">Explore the diverse range of skills I've cultivated through my academic, professional, and extracurricular endeavors, visualized with proficiency indicators.</p>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="card p-8 shadow-xl shadow-slate-200/50">
+                        <h3 class="text-xl font-semibold text-blue-700 mb-4">Communication & Interpersonal</h3>
+                        <div class="space-y-4">
+                            <div class="skill-item">
+                                <p class="text-slate-700 mb-1">Public Speaking & Debating</p>
+                                <div class="w-full bg-slate-200 rounded-full h-2.5 mb-4">
+                                    <div class="skill-bar-inner bg-blue-600 h-2.5 rounded-full" style="--skill-width: 90%;"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <p class="text-slate-700 mb-1">Team Collaboration</p>
+                                <div class="w-full bg-slate-200 rounded-full h-2.5 mb-4">
+                                    <div class="skill-bar-inner bg-blue-600 h-2.5 rounded-full" style="--skill-width: 85%;"></div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card p-8 shadow-xl shadow-slate-200/50">
+                        <h3 class="text-xl font-semibold text-blue-700 mb-4">Problem-Solving & Adaptability</h3>
+                        <div class="space-y-4">
+                            <div class="skill-item">
+                                <p class="text-slate-700 mb-1">Analytical Thinking</p>
+                                <div class="w-full bg-slate-200 rounded-full h-2.5 mb-4">
+                                    <div class="skill-bar-inner bg-blue-600 h-2.5 rounded-full" style="--skill-width: 80%;"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <p class="text-slate-700 mb-1">Learning Agility</p>
+                                <div class="w-full bg-slate-200 rounded-full h-2.5 mb-4">
+                                    <div class="skill-bar-inner bg-blue-600 h-2.5 rounded-full" style="--skill-width: 95%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card md:col-span-2 p-8 shadow-xl shadow-slate-200/50">
+                        <h3 class="text-xl font-semibold text-blue-700 mb-4">Technical & Software Proficiency</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+                            <div class="skill-item">
+                                <p class="text-slate-700 mb-1">Python</p>
+                                <div class="w-full bg-slate-200 rounded-full h-2.5 mb-4">
+                                    <div class="skill-bar-inner bg-blue-600 h-2.5 rounded-full" style="--skill-width: 75%;"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <p class="text-slate-700 mb-1">HTML & CSS</p>
+                                <div class="w-full bg-slate-200 rounded-full h-2.5 mb-4">
+                                    <div class="skill-bar-inner bg-blue-600 h-2.5 rounded-full" style="--skill-width: 85%;"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <p class="text-slate-700 mb-1">JavaScript (Vanilla)</p>
+                                <div class="w-full bg-slate-200 rounded-full h-2.5 mb-4">
+                                    <div class="skill-bar-inner bg-blue-600 h-2.5 rounded-full" style="--skill-width: 70%;"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <p class="text-slate-700 mb-1">MS Office Suite (Word, Excel, PowerPoint)</p>
+                                <div class="w-full bg-slate-200 rounded-full h-2.5 mb-4">
+                                    <div class="skill-bar-inner bg-blue-600 h-2.5 rounded-full" style="--skill-width: 90%;"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <p class="text-slate-700 mb-1">Canva</p>
+                                <div class="w-full bg-slate-200 rounded-full h-2.5 mb-4">
+                                    <div class="skill-bar-inner bg-blue-600 h-2.5 rounded-full" style="--skill-width: 60%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="py-16 md:py-24 animate-on-scroll">
+            <div class="max-w-5xl mx-auto px-4">
+                <h2 class="text-4xl font-bold text-slate-800 mb-12 text-center relative section-title after:absolute after:bottom-[-10px] after:left-1/2 after:-translate-x-1/2 after:w-20 after:h-1 after:bg-blue-600 after:rounded-full">My Projects</h2>
+                <p class="text-center text-slate-600 mb-12 max-w-2xl mx-auto">Explore some of the key projects I've worked on, showcasing my practical application of technical skills and problem-solving abilities. **(Please replace with your actual projects!)**</p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="card bg-white p-8 shadow-xl shadow-blue-200/50 hover:shadow-2xl hover:scale-[1.01] transition-all duration-300 ease-in-out">
+                        <h3 class="text-2xl font-semibold text-blue-700 mb-3">Interactive Portfolio Builder</h3>
+                        <p class="text-sm text-slate-500 mb-3">Frontend Development, User Experience</p>
+                        <p class="text-slate-700 leading-relaxed">Developed a dynamic web-based portfolio builder application, allowing users to showcase their work and skills in an interactive format. Focused on responsive design and intuitive navigation.</p>
+                        <ul class="list-disc list-inside text-sm text-slate-600 mt-4">
+                            <li>**Technologies:** HTML, CSS (Tailwind), JavaScript</li>
+                            <li>**Role:** Frontend Developer, UI/UX conceptualization</li>
+                        </ul>
+                    </div>
+                    <div class="card bg-white p-8 shadow-xl shadow-blue-200/50 hover:shadow-2xl hover:scale-[1.01] transition-all duration-300 ease-in-out">
+                        <h3 class="text-2xl font-semibold text-blue-700 mb-3">Student Feedback Analysis Tool</h3>
+                        <p class="text-sm text-slate-500 mb-3">Data Collection, Analysis, Information Visualization</p>
+                        <p class="text-slate-700 leading-relaxed">Designed a prototype tool for collecting and analyzing student feedback to identify key themes and areas for improvement in academic programs. Focused on data interpretation and presentation.</p>
+                        <ul class="list-disc list-inside text-sm text-slate-600 mt-4">
+                            <li>**Technologies:** Python (for data processing simulation), Conceptual UI design</li>
+                            <li>**Role:** Data Analyst, Information Architect</li>
+                        </ul>
+                    </div>
+                    </div>
+            </div>
+        </section>
+
+        <section id="certifications" class="py-16 md:py-24 bg-gradient-to-br from-slate-50 to-gray-100 rounded-xl my-12 md:my-16 animate-on-scroll">
+            <div class="max-w-5xl mx-auto px-4">
+                <h2 class="text-4xl font-bold text-slate-800 mb-12 text-center relative section-title after:absolute after:bottom-[-10px] after:left-1/2 after:-translate-x-1/2 after:w-20 after:h-1 after:bg-blue-600 after:rounded-full">My Certifications</h2>
+                <p class="text-center text-slate-600 mb-12 max-w-2xl mx-auto">A selection of my online learning and professional certifications, demonstrating my commitment to continuous skill development. **(Please replace with your actual certifications!)**</p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="card bg-white p-8 shadow-xl shadow-green-200/50 hover:shadow-2xl hover:scale-[1.01] transition-all duration-300 ease-in-out">
+                        <h3 class="text-xl font-semibold text-green-700 mb-2">Introduction to Data Science</h3>
+                        <p class="text-sm text-slate-500 mb-1">Coursera | IBM</p>
+                        <p class="text-slate-700 text-sm">Completed: March 2024</p>
+                        <p class="text-slate-600 mt-3">Covers fundamental concepts of data science, data analysis techniques, and basic statistical methods, enhancing my analytical capabilities.</p>
+                    </div>
+                    <div class="card bg-white p-8 shadow-xl shadow-green-200/50 hover:shadow-2xl hover:scale-[1.01] transition-all duration-300 ease-in-out">
+                        <h3 class="text-xl font-semibold text-green-700 mb-2">Digital Marketing Fundamentals</h3>
+                        <p class="text-sm text-slate-500 mb-1">Google Skillshop</p>
+                        <p class="text-slate-700 text-sm">Completed: May 2024</p>
+                        <p class="text-slate-600 mt-3">Explored core principles of digital marketing, including SEO, SEM, social media marketing, and content strategy, directly applicable to HR & Marketing roles.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="activities" class="py-16 md:py-24 animate-on-scroll">
+            <div class="max-w-4xl mx-auto px-4">
+                <h2 class="text-4xl font-bold text-slate-800 mb-12 text-center relative section-title after:absolute after:bottom-[-10px] after:left-1/2 after:-translate-x-1/2 after:w-20 after:h-1 after:bg-blue-600 after:rounded-full">Extracurricular Activities & Interests</h2>
+                <p class="text-center text-slate-600 mb-12 max-w-2xl mx-auto">Beyond academics and work, these activities have helped me develop a well-rounded personality and hone crucial life skills such as teamwork, leadership, and discipline.</p>
+                <div class="space-y-6">
+                    <div class="card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all duration-300 ease-in-out">
+                        <h3 class="text-lg font-semibold text-slate-800 mb-2">Sponsorship Team Member, RNSIT (2023 - Present)</h3>
+                        <p class="text-slate-700 leading-relaxed">Actively involved in securing sponsorships for college events, fostering teamwork and negotiation skills crucial for marketing and PR.</p>
+                    </div>
+                    <div class="card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all duration-300 ease-in-out">
+                        <h3 class="text-lg font-semibold text-slate-800 mb-2">Debating</h3>
+                        <p class="text-slate-700 leading-relaxed">Regular participant in debates, enhancing critical thinking, research, public speaking, and persuasive communication abilities.</p>
+                    </div>
+                    <div class="card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all duration-300 ease-in-out">
+                        <h3 class="text-lg font-semibold text-slate-800 mb-2">Swimming</h3>
+                        <p class="text-slate-700 leading-relaxed">Good in swimming, demonstrating discipline, perseverance, and a commitment to personal well-being.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div class="fixed bottom-8 right-8 z-50 text-5xl floating-avatar cursor-pointer" title="Hello there!">
+        👋
+    </div>
+
+    <footer id="contact" class="bg-slate-900 text-slate-200 py-12 md:py-16 animate-on-scroll">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl font-bold mb-6 text-white relative section-title after:absolute after:bottom-[-10px] after:left-1/2 after:-translate-x-1/2 after:w-20 after:h-1 after:bg-blue-600 after:rounded-full">Get In Touch</h2>
+            <p class="text-slate-300 mb-10 max-w-xl mx-auto">I'm always open to discussing new opportunities and collaborations. Feel free to reach out through any of the channels below.</p>
+            <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-8 mb-10 text-lg">
+                <a href="tel:9528677716" class="flex items-center hover:text-blue-400 transition-colors">
+                    <span class="text-2xl mr-2">📞</span> 9528677716
+                </a>
+                <a href="mailto:divyanshrai23is@rnsit.ac.in" class="flex items-center hover:text-blue-400 transition-colors">
+                    <span class="text-2xl mr-2">📧</span> divyanshrai23is@rnsit.ac.in
+                </a>
+                <a href="https://www.linkedin.com/in/divyansh-rai-0262a6286?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noopener noreferrer" class="flex items-center hover:text-blue-400 transition-colors">
+                    <span class="text-2xl mr-2">🔗</span> LinkedIn Profile
+                </a>
+            </div>
+            <p class="text-sm text-slate-400 mt-8">&copy; <span id="currentYear"></span> Divyansh Rai. All rights reserved. Interactive Portfolio created with passion.</p>
+            <p class="text-xs text-slate-500 mt-2">Declaration: I hereby declare that all the information provided is true and correct to the best of my knowledge and belief.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Header Shrink/Change on Scroll ---
+        const mainHeader = document.getElementById('main-header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                mainHeader.classList.add('h-14', 'bg-white', 'shadow-xl');
+                mainHeader.classList.remove('h-16', 'bg-white/80', 'shadow-md');
+            } else {
+                mainHeader.classList.remove('h-14', 'bg-white', 'shadow-xl');
+                mainHeader.classList.add('h-16', 'bg-white/80', 'shadow-md');
+            }
+        });
+
+        // --- Mobile menu toggle ---
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenuButton.querySelectorAll('svg').forEach(icon => icon.classList.toggle('hidden'));
+        });
+
+        // --- Close mobile menu on link click ---
+        document.querySelectorAll('#mobile-menu a').forEach(anchor => {
+            anchor.addEventListener('click', function () {
+                mobileMenu.classList.add('hidden');
+                mobileMenuButton.querySelectorAll('svg')[0].classList.remove('hidden');
+                mobileMenuButton.querySelectorAll('svg')[1].classList.add('hidden');
+            });
+        });
+
+        // --- Scroll Reveal Animation ---
+        const animateElements = document.querySelectorAll('.animate-on-scroll');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    // Trigger skill bar animation when the skills section becomes visible
+                    if (entry.target.id === 'skills') {
+                        const skillBars = entry.target.querySelectorAll('.skill-bar-inner');
+                        skillBars.forEach(bar => {
+                            bar.style.width = bar.style.getPropertyValue('--skill-width');
+                        });
+                    }
+                }
+            });
+        }, { threshold: 0.15 });
+
+        animateElements.forEach(element => {
+            observer.observe(element);
+        });
+        
+        // --- Set current year in footer ---
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
+
+</body>
+</html>
